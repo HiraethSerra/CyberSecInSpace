@@ -1,33 +1,39 @@
 #!/bin/bash
-if [ -z "$1" ]; then
-  echo "Usage: $0 <file_pattern>"
-  exit 1
-fi
-pattern=$1
-files=($pattern)
-file_count=${#files[@]}
-total=$(cat $pattern | wc -l)
-infos=$(grep INFO $pattern | wc -l)
-warns=$(grep WARN $pattern | wc -l)
-errors=$(grep ERROR $pattern | wc -l)
 
+files=0
+entries=0
+info=0
+warn=0
+error=0
+top=""
 max=0
-most_unstable=""
-for file in $pattern; do
-  count=$(grep ERROR "$file" | wc -l)
-  if [ "$count" -gt "$max" ]; then
-    max=$count
-    most_unstable=$(basename $file)
-  fi
+
+for file in $1
+do
+files=$((files + 1))
+
+lines=$(wc -l < "$file")
+entries=$((entries + lines))
+
+i=$(grep -c INFO "$file")
+w=$(grep -c WARN "$file")
+e=$(grep -c ERROR "$file")
+
+info=$((info + i))
+warn=$((warn + w))
+error=$((error + e))
+
+if [ "$e" -gt "$max" ]
+then
+max=$e
+top=$(basename "$file")
+fi
 done
 
-{
-  echo "MISSION REPORT"
-  echo "Processed files: $file_count"
-  echo "Total entries: $total"
-  echo "INFO: $infos"
-  echo "WARN: $warns"
-  echo "ERROR: $errors"
-  echo "Most unstable log: $most_unstable"
-} > reports/mission_report.txt
-cat reports/mission_report.txt
+echo "MISSION REPORT" > reports/mission_report.txt
+echo "Processed files: $files" >> reports/mission_report.txt
+echo "Total entries: $entries" >> reports/mission_report.txt
+echo "INFO: $info" >> reports/mission_report.txt
+echo "WARN: $warn" >> reports/mission_report.txt
+echo "ERROR: $error" >> reports/mission_report.txt
+echo "Most unstable log: $top" >> reports/mission_report.txt

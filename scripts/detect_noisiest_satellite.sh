@@ -1,12 +1,19 @@
 #!/bin/bash
+
+top=""
 max=0
-noisiest=""
-for file in logs/*.log; do
-  count=$(grep -E "WARN|ERROR" "$file" | wc -l)
-  echo "$(basename $file): $count non-INFO events"
-  if [ "$count" -gt "$max" ]; then
-    max=$count
-    noisiest=$(basename $file)
-  fi
+
+for file in logs/*.log
+do
+warn=$(grep -c WARN "$file")
+error=$(grep -c ERROR "$file")
+total=$((warn + error))
+
+if [ "$total" -gt "$max" ]
+then
+max=$total
+top=$(basename "$file")
+fi
 done
-echo "Noisiest satellite: $noisiest ($max non-INFO events)"
+
+echo "$top"

@@ -1,3 +1,3 @@
 #!/bin/bash
-echo "Global event distribution across all logs:"
-cat logs/*.log | cut -d ' ' -f3 | sort | uniq -c | sort -rn
+
+grep -h -o "INFO\|WARN\|ERROR" logs/*.log | sort | uniq -c
