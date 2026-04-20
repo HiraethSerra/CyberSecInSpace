@@ -1,0 +1,4 @@
+Log level counts across all satellite logs:
+      5 ERROR
+      7 INFO
+      4 WARN
