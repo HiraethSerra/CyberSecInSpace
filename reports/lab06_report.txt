@@ -1,1 +1,31 @@
 https://github.com/HiraethSerra/CyberSecInSpace/pull/3
+
+What was possible in insecure telemetry channel? 
+Telemetry was sent as plaintext with no verification. Any message was accepted by the receiver.
+
+What attacks were blocked by HMAC? 
+HMAC rejected messages carrying invalid signatures and messages where the value was altered but the original signature was reused.
+
+Which attacks were still possible after adding HMAC? 
+Replay attacks remained possible. A valid captured message could be resent and accepted. 
+
+Why was replay protection needed as a separate mechanism? 
+Old valid messages could still be reused. 
+
+Why does this lab still not provide confidentiality? 
+Message contents remain visible in transit. 
+
+What additional protections would be needed for the command channel?
+Encryption to protect message contents. 
+
+
+
+Accepted message example: [ACCEPTED 2026-05-04T20:52:37-04:00] SAT_ID=sat-001;TIMESTAMP=2026-05-04T20:52:37-04:00;VALUE=56 
+
+
+
+Rejected replay example: [REJECTED 2026-05-04T20:52:39-04:00] REPLAY DETECTED: SAT_ID=sat-001;TIMESTAMP=2026-05-04T20:49:20-04:00;VALUE=49 
+
+How timestamp prevents replay?
+Each accepted message updates the stored timestamp per satellite. Any incoming message with an equal or older timestamp is rejected.
+
