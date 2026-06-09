@@ -1,0 +1,61 @@
+https://github.com/HiraethSerra/CyberSecInSpace/pull/2
+
+
+Task 1:
+
+Sim running:
+
+nc (PID 12952) listening on port 6000.
+
+Multiple nc sessions are active on 127.0.0.1, showing internal communication between ports 5000 and 9999.
+
+A python3 process (PID 13222) is connected to external IP 1.1.1.1, which is suspicious actibity.
+
+The stop script failed to kill several nc processes, leaving active network sockets open after the simulation ended.
+
+Task 2:
+
+nmap only detected port 6000 as open, even though the simulation is running.
+
+This shows that ss see all active sessions, but nmap only see ports specifically set to a LISTEN state.
+
+Task 3:
+
+The script correctly identified port 6000 as an approved service based on the whitelist.
+
+The automated audit can distinguish between authorized services and potential security gaps.
+
+Task 4:
+
+The script detected two separate nc processes listening on port 6000 (PIDs 14281 and 12952).
+
+Task 5:
+
+The script identified 8 active connections, primarily internal nc sessions.
+
+The output successfully tracked established TCP sessions.
+
+Task 6:
+
+The script flagged an external connection initiated by a python3 process (PID 20194).
+
+Task 7:
+
+The system classifies threats by checking if specific categories are active.
+
+WARNING is issued for a single run like Log Anomalies, while a CRITICAL status is triggered when two or more categories are detected simultaneously.
+
+Task 8:
+
+The number of established connections was between 12 and 14, causing the classification to toggle between WARNING and CRITICAL. 
+
+Task 9:
+
+Top Process: nc (14 connections)
+Classification: CRITICAL
+
+Task 11:
+
+Subnet: 10.0.2.15/24
+Active Hosts Discovered: 3
+
