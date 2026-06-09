@@ -1,0 +1,47 @@
+The project directory structure:
+
+student@student-CZR-BUSINESS-1150:~/orion-system$ ls -R
+config  logs  reports  scripts
+
+./config:
+
+./logs:
+sat-001-backup.log  sat-001.log  sat-002.log
+
+./reports:
+lab01_check.txt  lab01_report.txt
+
+./scripts:
+
+The list of created log files:
+
+student@student-CZR-BUSINESS-1150:~/orion-system$ ls -l logs
+total 12
+-rw-rw-r-- 1 student student 159 mar 24 12:15 sat-001-backup.log
+-rw-rw-r-- 1 student student 212 mar 24 12:22 sat-001.log
+-rw-r--r-- 1 student student 177 mar 24 12:07 sat-002.log
+
+
+Results of the counting tasks:
+
+student@student-CZR-BUSINESS-1150:~/orion-system$ wc -l logs/sat-001.log
+4 logs/sat-001.log
+student@student-CZR-BUSINESS-1150:~/orion-system$ grep ERROR logs/sat-002.log | wc -l
+1
+
+Verified file permissions:
+
+student@student-CZR-BUSINESS-1150:~/orion-system$ ls -l logs
+total 12
+-rw-rw-r-- 1 student student 159 mar 24 12:15 sat-001-backup.log
+-rw-rw-r-- 1 student student 212 mar 24 12:22 sat-001.log
+-rw-r--r-- 1 student student 177 mar 24 12:07 sat-002.log
+
+Confirmation that all tasks were completed:
+
+student@student-CZR-BUSINESS-1150:~/orion-system$ ls -l logs
+total 12
+-rw-rw-r-- 1 student student 159 mar 24 12:15 sat-001-backup.log
+-rw-rw-r-- 1 student student 212 mar 24 12:22 sat-001.log
+-rw-r--r-- 1 student student 177 mar 24 12:07 sat-002.log
+
