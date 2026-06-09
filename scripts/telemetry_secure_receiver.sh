@@ -1,20 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 PORT=5001
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPORT_DIR="$SCRIPT_DIR/reports"
-LOG_FILE="../reports/telemetry_secure.log"
 SECRET_KEY="orion-shared-secret"
-DATA=$(echo "$line" | sed ’s/;SIGNATURE=.*//’)
-RECEIVED_SIGNATURE=$(echo "$line" | sed ’s/.*;SIGNATURE=//’)
-EXPECTED_SIGNATURE=$(printf "%s" "$DATA" | openssl dgst -sha256 -hmac "$SECRET_KEY" |
-cut -d’ ’ -f2)
+LOG_FILE="../reports/telemetry_secure.log"
+STATE_FILE="../reports/last_timestamp.db"
 
-mkdir -p "$REPORT_DIR"
+mkdir -p ../reports
 touch "$LOG_FILE"
+touch "$STATE_FILE"
 
-echo "=== TELEMETRY RECEIVER STARTED ==="
+echo "=== SECURE TELEMETRY RECEIVER STARTED ==="
 echo "Listening on port $PORT"
 echo "Logging to $LOG_FILE"
 echo ""
@@ -22,16 +17,34 @@ echo ""
 while true; do
     nc -l -p "$PORT" | while IFS= read -r line; do
         TS=$(date -Iseconds)
-        echo "[RECEIVED $TS] $line"
-        echo "[RECEIVED $TS] $line" >> "$LOG_FILE"
+        DATA=$(echo "$line" | sed 's/;SIGNATURE=.*//')
+        RECEIVED_SIGNATURE=$(echo "$line" | sed 's/.*;SIGNATURE=//')
+        EXPECTED_SIGNATURE=$(printf "%s" "$DATA" | openssl dgst -sha256 -hmac "$SECRET_KEY" | cut -d' ' -f2)
+
+        if [ "$RECEIVED_SIGNATURE" != "$EXPECTED_SIGNATURE" ]; then
+            echo "[REJECTED $TS] INVALID SIGNATURE: $line"
+            echo "[REJECTED $TS] INVALID SIGNATURE: $line" >> "$LOG_FILE"
+            continue
+        fi
+
+        TIMESTAMP=$(echo "$DATA" | grep -o 'TIMESTAMP=[^;]*' | cut -d= -f2)
+        SAT_ID=$(echo "$DATA" | grep -o 'SAT_ID=[^;]*' | cut -d= -f2)
+        LAST_TS=$(grep "^$SAT_ID=" "$STATE_FILE" | cut -d= -f2)
+
+        if [ -n "$LAST_TS" ]; then
+            NEWER=$(printf "%s\n%s\n" "$LAST_TS" "$TIMESTAMP" | sort | tail -1)
+            if [ "$NEWER" = "$LAST_TS" ] || [ "$TIMESTAMP" = "$LAST_TS" ]; then
+                echo "[REJECTED $TS] REPLAY DETECTED: $DATA"
+                echo "[REJECTED $TS] REPLAY DETECTED: $DATA" >> "$LOG_FILE"
+                continue
+            fi
+        fi
+
+        TMP_FILE=$(mktemp)
+        grep -v "^$SAT_ID=" "$STATE_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$STATE_FILE"
+        echo "$SAT_ID=$TIMESTAMP" >> "$STATE_FILE"
+
+        echo "[ACCEPTED $TS] $DATA"
+        echo "[ACCEPTED $TS] $DATA" >> "$LOG_FILE"
     done
 done
-
-
-if [ "$RECEIVED_SIGNATURE" = "$EXPECTED_SIGNATURE" ]; then
-echo "[ACCEPTED $TS] $DATA"
-echo "[ACCEPTED $TS] $DATA" >> "$LOG_FILE"
-else
-echo "[REJECTED $TS] INVALID SIGNATURE: $line"
-echo "[REJECTED $TS] INVALID SIGNATURE: $line" >> "$LOG_FILE"
-fi
