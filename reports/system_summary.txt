@@ -1,4 +1,5 @@
-Total log entries: 19
-INFO events: 9
-WARN events: 5
+ORION SYSTEM SUMMARY
+Total log entries: 16
 ERROR events: 5
+WARN events: 4
+INFO events: 7

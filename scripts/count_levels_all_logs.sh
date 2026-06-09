@@ -1,5 +1,4 @@
 #!/bin/bash
-
-cut -d ' ' -f3 logs/*.log | sort | uniq -c > reports/level_summary.txt
-
-echo "Level summary saved to reports/level_summary.txt"
+echo "Log level counts across all satellite logs:" > reports/level_summary.txt
+cat logs/*.log | cut -d ' ' -f3 | sort | uniq -c >> reports/level_summary.txt
+cat reports/level_summary.txt

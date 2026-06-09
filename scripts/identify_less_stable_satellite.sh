@@ -1,12 +1,11 @@
 #!/bin/bash
-
-sat1=$(grep ERROR logs/sat-001.log | wc -l)
-sat2=$(grep ERROR logs/sat-002.log | wc -l)
-
-if [ $sat1 -gt $sat2 ]; then
+e1=$(grep ERROR logs/sat-001.log | wc -l)
+e2=$(grep ERROR logs/sat-002.log | wc -l)
+echo "ERROR count - sat-001: $e1, sat-002: $e2"
+if [ "$e1" -gt "$e2" ]; then
   echo "Less stable satellite: sat-001"
-elif [ $sat2 -gt $sat1 ]; then
+elif [ "$e2" -gt "$e1" ]; then
   echo "Less stable satellite: sat-002"
 else
-  echo "Both satellites appear equally stable"
+  echo "Both satellites are equally stable"
 fi

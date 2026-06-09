@@ -1,22 +1,26 @@
 #!/bin/bash
+total=$(cat logs/*.log | wc -l)
+infos=$(grep INFO logs/*.log | wc -l)
+warns=$(grep WARN logs/*.log | wc -l)
+errors=$(grep ERROR logs/*.log | wc -l)
 
-total=$(wc -l logs/*.log | tail -n1 | awk '{print $1}')
-info=$(grep INFO logs/*.log | wc -l)
-warn=$(grep WARN logs/*.log | wc -l)
-error=$(grep ERROR logs/*.log | wc -l)
-
-sat1=$(grep ERROR logs/sat-001.log | wc -l)
-sat2=$(grep ERROR logs/sat-002.log | wc -l)
-
-if [ $sat1 -gt $sat2 ]; then
-  unstable="sat-001"
+e1=$(grep ERROR logs/sat-001.log | wc -l)
+e2=$(grep ERROR logs/sat-002.log | wc -l)
+if [ "$e1" -gt "$e2" ]; then
+  less_stable="sat-001"
+elif [ "$e2" -gt "$e1" ]; then
+  less_stable="sat-002"
 else
-  unstable="sat-002"
+  less_stable="sat-001"
 fi
 
-echo "ORION LOG SUMMARY" > reports/log_summary.txt
-echo "Total log entries: $total" >> reports/log_summary.txt
-echo "INFO events: $info" >> reports/log_summary.txt
-echo "WARN events: $warn" >> reports/log_summary.txt
-echo "ERROR events: $error" >> reports/log_summary.txt
-echo "Less stable satellite: $unstable" >> reports/log_summary.txt
+{
+  echo "ORION LOG SUMMARY"
+  echo "Total log entries: $total"
+  echo "INFO events: $infos"
+  echo "WARN events: $warns"
+  echo "ERROR events: $errors"
+  echo "Less stable satellite: $less_stable"
+} > reports/log_summary.txt
+
+cat reports/log_summary.txt
