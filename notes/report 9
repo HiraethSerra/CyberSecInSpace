@@ -1,0 +1,137 @@
+Lab 9 report
+
+Task 0
+
+What container did you define in docekr-conpose.yml?
+metasploit
+
+Why is Metasploit executed inside Docker instead of directly installed on the host?
+It allows us to recreate the environment, avoid installing huge number of dependencies on host, remove the environment after lab is over, understand how such offensive tools can be containerized.
+
+What is the purpose of stdin_open and tty?
+They enable interactive terminal access, primarily because Metasploit is used through CLI.
+
+What does the prompt msf6 > indicate?
+Metasploit Framework 6 uses msf6. It is used in console enviroment.
+
+Task 1
+
+What is vulhub?
+An open-source collection of environments, setup to be intentionally vulnerable.
+
+Why are intentionally vulnerable environments useful?
+They allow security professionals to safely reproduce vulnerabilites without exposing systems.
+
+Which TCP port is exposed?
+port 10000
+
+WHy does the browser display a certificate warning?
+Because the environment uses a self-signed certificate, which is not verified by a trusted authority like CA.
+
+Why should offensive security exercises be performed in isolated environments?
+To safely reproduce vulnerabilites without exposing production systems.
+
+Task 2
+
+Open ports: 10000
+Closed ports: nil
+Exposed services: snet-sensor-mgmt
+Detected version: MiniServ 1.9.10
+
+Task 3
+
+Why is software version information valuable to attackers?
+A specific version number allows an attacker to search for known vulnerabilites, identify affected CVEs, locate exploit code, estimate the likelihood of successful exploitation.
+
+Why are public exploit databases useful?
+They can be used to identify known vulnerabilities, investigate affected versions and locate exploit code.
+
+Does the existence of a public exploit guarantee successful exploitation?
+Yes, once public exploit is found, the next step in the workflow is system compromising.
+
+Why do attackers prefer reusing existing exploits instead of developing new ones?
+There is high chance that the existing exploits can compromise the system without deploying new ones.
+
+What additional information should be verified before attempting exploitation?
+Before, we should gather informatiob, identify software versions and determine whether existing attacks can be reused.
+
+Task 4
+
+Which system is the attacker?
+The system recieving connection.
+
+Which system is the victim?
+The system sending connection.
+
+Which system initiates the connection?
+The Victim's system initiates the connection.
+
+Which port is used by Webmin?
+10000
+
+Which port is used by the reverse shell?
+4444
+
+Task 5
+
+What was the purpose of the exploit module? 
+It sent a malicious HTTP POST to Webmin's file to trigger command injection.
+
+What was the purpose of the payload?
+The payload executed on the victim to open a conenction back to metasploit listener.
+
+Why was LHOST required? 
+To tell the victim where to connect back to.
+
+Why was SSL enabled? 
+SSL had to be enabled to communicate with webmin which runs on HTTPS.
+
+Which evidence indicates that exploitation succeeded?
+Command shell session 1 opened line, and the whoami returned root.
+
+Task 7
+
+Which component was vulnerable?
+password_change.cgi
+
+Which parameter carried attacker-controlled commands?
+expired and old POST parameter.
+
+Why is HTTP 200 not proof of successful exploitation?
+It confirms that the server responded, not that injection happened.
+
+Why does creating a file provide stronger evidence?
+It is physical proff that OS ran our command and created the file.
+
+What advantages does an interactive shell provide?
+It lets us run multiple commands instead of one at a time.
+
+What parts of the attack were automated by Metasploit?
+Payload generation, request creation and session management.
+
+Task 8
+
+What is a reverse shell?
+A reverse shell is a connection initiated by the victim back to the attacker, giving the attacker a CLI.
+
+Why must a listener be started before exploitation?
+The listener must be started first because the victim connects to it. If nothing is waiting, the connection is lost.
+
+Which side initiates the reverse shell connection?
+The victim (Webmin container) initiates the connection back to us.
+
+Why may the Python script display a timeout error?
+The Python script times out because Webmin never sends an HTTP response, it's busy running the shell instead.
+
+What advantages does an interactive shell provide?
+A shell lets you run many commands interactively, explore the system, and pivot further.
+
+How does this technique relate to the Metasploit exploit used earlier?
+Metasploit automates listener setup, payload crafting, and delivery, in one run command.
+
+
+
+
+
+
+
