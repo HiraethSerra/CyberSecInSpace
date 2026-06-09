@@ -1,0 +1,32 @@
+1. Why is observability different from simple logging? 
+
+Logging just records seperate text events when something happens. 
+Observability connects logs, metrics, and traces together.
+
+2. Why are metrics important in mission operations? 
+
+Metrics provide real-time numerical data like CPU use or error rates.
+
+3. Why are logs alone insufficient? 
+
+Logs lack cross-service context and tracing IDs. When an error bounces across multiple microservices, digging through raw text logs makes it nearly impossible to know the exact failure path.
+
+4. What information do traces provide? 
+
+Traces map the exact end-to-end path a request takes through the system. They show the order of service calls and precise execution times for every step.
+
+5. What is a span? 
+
+A span is a single unit of work within a trace, like one HTTP request or command.
+
+6. How can OpenTelemetry correlate logs, metrics, and traces? 
+
+OpenTelemetry injects matching Trace IDs and Span IDs into all telemetry data. This links everything together, allowing tools like Grafana to instantly pull up the logs and metrics tied to a specific trace.
+
+7. How can observability help detect cyberattacks? 
+
+It highlights unusual behavior like metric spikes on auth endpoints or strange trace tags. For example, our script exposed unauthorized commands like FORCE_DEORBIT and flagged an unknown attacker node.
+
+8. Why is incident correlation important in distributed systems? 
+
+One root error can cause a chain reaction of failures across different services. Correlation connects these fragments so operators can separate cause from effect and fix the real issue fast.
